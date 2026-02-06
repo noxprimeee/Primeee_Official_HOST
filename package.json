@@ -1,0 +1,11 @@
+{
+"name":"PRIMEEE-HOSTING",
+"main":"server.js",
+"scripts":{
+"start":"node server.js"
+},
+"dependencies":{
+"express":"^4",
+"uuid":"^9"
+}
+}
