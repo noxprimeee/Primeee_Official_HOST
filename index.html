@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<body style="background:black;color:lime;font-family:monospace">
+
+<h1>𝚸𝚪𝚰𝚳𝚵𝚵𝚵⥕HOSTING GOD MODE</h1>
+
+<input id="repo" placeholder="Git Repo">
+
+<button onclick="deploy()">Deploy</button>
+
+<div id="console"></div>
+
+<script>
+
+async function deploy(){
+
+let r = await fetch('/deploy',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({repo:repo.value})
+})
+
+let data = await r.json()
+
+console.innerHTML += "BOT DEPLOYED : "+data.bot+"<br>"
+
+}
+
+</script>
+
+</body>
+</html>
