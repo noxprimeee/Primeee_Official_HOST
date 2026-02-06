@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>𝚸𝚪𝚰𝚳𝚵𝚵𝚵⥕HOSTING</title>
+
+<style>
+
+body{
+background:#0d0d0d;
+color:white;
+font-family:monospace;
+}
+
+.panel{
+border:1px solid #333;
+padding:20px;
+margin:10px;
+}
+
+button{
+background:black;
+color:cyan;
+border:1px solid cyan;
+padding:5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🚀 𝚸𝚪𝚰𝚳𝚵𝚵𝚵⥕HOSTING</h1>
+
+<div id="app"></div>
+
+<script>
+
+// ===== DATABASE LOCAL =====
+
+if(!localStorage.users){
+
+localStorage.users = JSON.stringify([
+{
+email:"admin",
+password:"admin",
+coins:999999,
+admin:true,
+banned:false
+}
+])
+
+}
+
+let currentUser = null
+
+// ===== RENDER =====
+
+function renderLogin(){
+
+app.innerHTML = `
+
+<div class="panel">
+
+<h2>Login</h2>
+
+<input id="email" placeholder="email">
+<input id="pass" placeholder="password">
+
+<button onclick="login()">LOGIN</button>
+<button onclick="register()">REGISTER</button>
+
+</div>
+
+`
+
+}
+
+// ===== AUTH =====
+
+function register(){
+
+let users = JSON.parse(localStorage.users)
+
+users.push({
+email:email.value,
+password:pass.value,
+coins:100,
+admin:false,
+banned:false
+})
+
+localStorage.users = JSON.stringify(users)
+
+alert("account created")
+
+}
+
+function login(){
+
+let users = JSON.parse(localStorage.users)
+
+let user = users.find(u=>u.email==email.value && u.password==pass.value)
+
+if(!user) return alert("error")
+
+if(user.banned) return alert("banned")
+
+// fake 2FA
+
+let code = Math.floor(100000+Math.random()*900000)
+
+alert("2FA code (email simulation): "+code)
+
+let input = prompt("enter 2FA")
+
+if(input != code) return alert("wrong code")
+
+currentUser = user
+
+renderDashboard()
+
+}
+
+// ===== DASHBOARD =====
+
+function renderDashboard(){
+
+app.innerHTML=`
+
+<div class="panel">
+
+<h2>Dashboard</h2>
+
+Coins : ${currentUser.coins}
+
+<br><br>
+
+<input id="gitlink" placeholder="git repo">
+
+<button onclick="deployGit()">Deploy Git</button>
+
+<br><br>
+
+<input type="file" id="file">
+
+<button onclick="upload()">Upload ZIP</button>
+
+<br><br>
+
+<button onclick="renderBots()">Mes Bots</button>
+
+${currentUser.admin ? '<button onclick="adminPanel()">ADMIN</button>' : ''}
+
+</div>
+
+`
+
+}
+
+// ===== DEPLOY SIMULATION =====
+
+function deployGit(){
+
+alert("📥 clone repo...\n📦 npm install...\n🚀 start bot")
+
+saveBot(gitlink.value)
+
+}
+
+function upload(){
+
+alert("ZIP upload + auto extract simulated")
+
+saveBot("uploaded-bot")
+
+}
+
+function saveBot(name){
+
+let bots = JSON.parse(localStorage.bots||"[]")
+
+bots.push({
+owner:currentUser.email,
+name:name
+})
+
+localStorage.bots = JSON.stringify(bots)
+
+}
+
+// ===== BOTS =====
+
+function renderBots(){
+
+let bots = JSON.parse(localStorage.bots||"[]")
+
+app.innerHTML = bots
+.filter(b=>b.owner==currentUser.email)
+.map(b=>`<div class="panel">${b.name}</div>`)
+.join("")
+
+}
+
+// ===== ADMIN =====
+
+function adminPanel(){
+
+let users = JSON.parse(localStorage.users)
+
+app.innerHTML = users.map(u=>`
+
+<div class="panel">
+
+${u.email}
+
+<button onclick="ban('${u.email}')">BAN</button>
+
+</div>
+
+`).join("")
+
+}
+
+function ban(email){
+
+let users = JSON.parse(localStorage.users)
+
+let u = users.find(x=>x.email==email)
+
+u.banned=true
+
+localStorage.users = JSON.stringify(users)
+
+alert("banned")
+
+}
+
+// start
+
+renderLogin()
+
+</script>
+
+</body>
+  </html>
